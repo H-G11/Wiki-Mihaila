@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-BASE_DIR = Path(file).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent
 
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY") or "change-this-secret"
