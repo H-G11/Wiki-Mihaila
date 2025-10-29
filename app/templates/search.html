@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Поиск</h1>
+<form method="post">
+  {{ form.hidden_tag() }}
+  {{ form.q(size=60, value=q) }}
+  {{ form.submit() }}
+</form>
+
+{% if results %}
+  <h2>Результаты</h2>
+  <ul>
+    {% for r in results %}
+      <li><a href="{{ url_for('main.view_page', slug=r.slug) }}">{{ r.title }}</a></li>
+    {% endfor %}
+  </ul>
+{% endif %}
+{% endblock %}

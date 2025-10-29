@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Главная — Wiki{% endblock %}
+{% block content %}
+<h1>Последние страницы</h1>
+<ul>
+  {% for p in pages %}
+    <li><a href="{{ url_for('main.view_page', slug=p.slug) }}">{{ p.title }}</a> — {{ p.created_at.strftime("%Y-%m-%d") }}</li>
+  {% else %}
+    <li>Нет страниц</li>
+  {% endfor %}
+</ul>
+
+<h2>Создать новую страницу</h2>
+<form action="{{ url_for('main.edit_page', slug='new-page') }}" method="get">
+  <input name="slug" placeholder="slug (например: about)" />
+  <button type="submit">Создать</button>
+</form>
+{% endblock %}

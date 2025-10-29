@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Wiki{% endblock %}</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="{{ url_for('main.index') }}">Главная</a> |
+      <a href="{{ url_for('main.search') }}">Поиск</a> |
+      {% if current_user.is_authenticated %}
+        Привет, {{ current_user.username }} |
+        <a href="{{ url_for('main.auth_logout') }}">Выйти</a>
+      {% else %}
+        <a href="{{ url_for('main.auth_login') }}">Войти</a> |
+        <a href="{{ url_for('main.auth_register') }}">Регистрация</a>
+      {% endif %}
+    </nav>
+  </header>
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flashes">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    <small>Wiki clone — demo</small>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ page.title if page else "Новая страница" }} — Wiki{% endblock %}
+{% block content %}
+<h1>{{ page.title if page else "Новая страница" }}</h1>
+
+<div class="page-controls">
+  <a href="{{ url_for('main.edit_page', slug=page.slug if page else 'new-page') }}">Редактировать</a>
+  {% if page %}
+    | <a href="{{ url_for('main.page_history', slug=page.slug) }}">История</a>
+  {% endif %}
+</div>
+
+<div class="page-content">
+  {{ html|safe }}
+</div>
+{% endblock %}

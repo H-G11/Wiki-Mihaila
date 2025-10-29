@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Редактировать: {{ form.title.data }}</h1>
+<form method="post">
+  {{ form.hidden_tag() }}
+  <div>
+    {{ form.title.label }}<br>
+    {{ form.title(size=80) }}
+  </div>
+  <div>
+    {{ form.content.label }}<br>
+    {{ form.content(rows=20, cols=80) }}
+  </div>
+  <div>
+    {{ form.comment.label }}<br>
+    {{ form.comment(size=80) }}
+  </div>
+  <div>
+    {{ form.submit() }}
+  </div>
+</form>
+<p>Поддерживается Markdown.</p>
+{% endblock %}
