@@ -6,7 +6,6 @@ from config import Config
 
 db = SQLAlchemy()
 login = LoginManager()
-login.login_view = "auth_login"
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -14,8 +13,9 @@ def create_app(config_class=Config):
 
     db.init_app(app)
     login.init_app(app)
+    login.login_view = "auth_login"  # назначаем страницу логина
 
-    # create uploads folder
+    # создаём папку uploads, если её нет
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
     from .views import bp as main_bp
