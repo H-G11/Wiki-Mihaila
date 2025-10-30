@@ -28,6 +28,8 @@ class Page(db.Model):
     __tablename__ = 'page'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255))
+    content = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Явно указываем внешний ключ для relationship
     revisions = db.relationship(
