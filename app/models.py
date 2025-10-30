@@ -2,6 +2,7 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from . import db, login
+from flask_sqlalchemy import SQLAlchemy
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -20,30 +21,27 @@ class User(UserMixin, db.Model):
 def load_user(id):
     return User.query.get(int(id))
 
+
+db = SQLAlchemy()
+
 class Page(db.Model):
+    __tablename__ = 'page'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255), unique=True, nullable=False, index=True)
-    slug = db.Column(db.String(255), unique=True, nullable=False)
-    current_revision_id = db.Column(db.Integer, db.ForeignKey("page_revision.id"), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    current_revision = db.relationship("PageRevision", foreign_keys=[current_revision_id], post_update=True)
-
-    revisions = db.relationship("PageRevision", back_populates="page", order_by="desc(PageRevision.created_at)")
+    title = db.Column(db.String(255))
+    
+    # Явно указываем внешний ключ для relationship
+    revisions = db.relationship(
+        'PageRevision',
+        backref='page',
+        foreign_keys='PageRevision.page_id',  # <- ключ, который соединяет Page и PageRevision
+        lazy='dynamic'
+    )
 
 class PageRevision(db.Model):
+    __tablename__ = 'page_revision'
     id = db.Column(db.Integer, primary_key=True)
-    page_id = db.Column(db.Integer, db.ForeignKey("page.id"))
-    title = db.Column(db.String(255))
-    content = db.Column(db.Text)
-    author_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    comment = db.Column(db.String(255), nullable=True)
-
-    page = db.relationship("Page", back_populates="revisions")
-    author = db.relationship("User")
-
-    def to_html(self):
-        import markdown2
-        return markdown2.markdown(self.content or "")
+    page_id = db.Column(db.Integer, db.ForeignKey('page.id'))
     
+    # Если есть другой внешний ключ на Page, например parent_id,
+    # его отдельно использовать в другом relationship, если нужно
+    parent_id = db.Column(db.Integer, db.ForeignKey('page.id'))
